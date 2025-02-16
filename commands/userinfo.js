@@ -1,17 +1,17 @@
 const { EmbedBuilder } = require('discord.js');
 
 async function execute(interaction) {
-    // Pokud je zmíněn uživatel, použije se on, jinak se použije volající uživatel
+    // If a user is mentioned, use that user, otherwise use the calling user
     const user = interaction.options.getUser('target') || interaction.user;
 
     const embed = new EmbedBuilder()
         .setColor(0x0099ff)
-        .setTitle('📜 Informace o uživatelském účtu')
-        .setDescription(`Zde jsou informace o uživatelském účtu.`)
+        .setTitle('**📜 User Account Information**')
+        .setDescription(`Here is the information about the user account.`)
         .addFields(
-            { name: 'Uživatelské jméno', value: user.tag, inline: true },
-            { name: 'ID uživatele', value: user.id, inline: true },
-            { name: 'Vytvořeno', value: `<t:${Math.floor(user.createdTimestamp / 1000)}:R>`, inline: true },
+            { name: '**Username**', value: user.tag, inline: true },
+            { name: '**User ID**', value: user.id, inline: true },
+            { name: '**Account Created**', value: `<t:${Math.floor(user.createdTimestamp / 1000)}:R>`, inline: true },
         )
         .setThumbnail(user.displayAvatarURL())
         .setFooter({ text: 'Sirbo' })

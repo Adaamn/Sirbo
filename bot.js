@@ -2,35 +2,71 @@ require('dotenv').config();
 const { Client, GatewayIntentBits, ActivityType } = require('discord.js');
 const { DISCORD_TOKEN, CLIENT_ID, GUILD_ID } = process.env;
 
-// Nastavení klienta s potřebnými intenty
+// Client setup with required intents
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.MessageContent,  // Tento intent musí být povolen
-        GatewayIntentBits.DirectMessages, // Přidání možnosti interakce v DM
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.DirectMessages, 
     ],
 });
 
-// Kód pro registraci příkazů
+// Code for registering commands
 const { REST, Routes } = require('discord.js');
 
 const commands = [
     {
         name: 'userinfo',
-        description: 'Zobrazí informace o uživatelském účtu. 👤',
+        description: 'Displays information about the user account. 👤',
         options: [
             {
                 name: 'user',
-                type: 6,  // Typ pro uživatele
-                description: 'Uživatel, o kterém chcete získat informace',
+                type: 6,  
+                description: 'The user you want to get information about',
                 required: false,
             },
         ],
     },
     {
         name: 'help',
-        description: 'Zobrazí seznam příkazů bota. ℹ️',
+        description: 'Displays a list of bot commands. ℹ️',
+    },
+    {
+        name: 'ban',
+        description: 'Ban a user from this server.',
+        options: [
+            {
+                name: 'target',
+                type: 6,  
+                description: 'The user you want to ban',
+                required: true,
+            },
+        ],
+    },
+    {
+        name: 'kick',
+        description: 'Kick a user from this server.',
+        options: [
+            {
+                name: 'target',
+                type: 6,  
+                description: 'The user you want to kick',
+                required: true,
+            },
+        ],
+    },
+    {
+        name: 'crypto',
+        description: 'Get the current price of a cryptocurrency. 💰',
+        options: [
+            {
+                name: 'coin',
+                type: 3,  // STRING type
+                description: 'The cryptocurrency name (e.g. bitcoin, ethereum)',
+                required: true,
+            },
+        ],
     },
 ];
 
@@ -38,51 +74,61 @@ const rest = new REST({ version: '10' }).setToken(DISCORD_TOKEN);
 
 async function registerCommands() {
     try {
-        console.log('Začínám registraci příkazů.');
+        console.log('Starting command registration.');
 
         await rest.put(
             Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID),
             { body: commands }
         );
 
-        console.log('Příkazy byly úspěšně registrovány!');
+        console.log('Commands were successfully registered!');
     } catch (error) {
-        console.error('Chyba při registraci příkazů:', error);
+        console.error('Error registering commands:', error);
     }
 }
 
 client.once('ready', () => {
-    console.log(`Bot ${client.user.tag} je online!`);
+    console.log(`Bot ${client.user.tag} is online!`);
     
-    // Nastavení Rich Presence
+    // Setting up Rich Presence
     client.user.setPresence({
         activities: [
             {
-                name: '/help', // Název hry/aktivity
-                type: ActivityType.Watching,  // Typ aktivity
+                name: '/help',
+                type: ActivityType.Watching,  
             },
         ],
-        status: 'dnd',  // Status bota, může být 'online', 'idle', 'dnd' nebo 'invisible'
+        status: 'dnd',  
     });
 
-    registerCommands();  // Zavolání funkce pro registraci příkazů
+    registerCommands();
 });
 
 client.on('interactionCreate', async (interaction) => {
     if (interaction.isCommand()) {
-        console.log(`Příkaz '${interaction.commandName}' byl aktivován uživatelem ${interaction.user.tag}!`); // Logování příkazu
+        console.log(`Command '${interaction.commandName}' was triggered by user ${interaction.user.tag}!`);
 
         if (interaction.commandName === 'userinfo') {
-            // Info o uživatelském účtu
             await require('./commands/userinfo').execute(interaction);
         }
 
         if (interaction.commandName === 'help') {
-            // Seznam příkazů
             await require('./commands/help').execute(interaction);
+        }
+
+        if (interaction.commandName === 'ban') {
+            await require('./commands/ban').execute(interaction);
+        }
+
+        if (interaction.commandName === 'kick') {
+            await require('./commands/kick').execute(interaction);
+        }
+
+        if (interaction.commandName === 'crypto') {
+            await require('./commands/crypto').execute(interaction);
         }
     }
 });
 
-// Přihlášení bota
+// Bot login
 client.login(DISCORD_TOKEN);

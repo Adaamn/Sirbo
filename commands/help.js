@@ -3,12 +3,19 @@ const { EmbedBuilder } = require('discord.js');
 async function execute(interaction) {
     const embed = new EmbedBuilder()
         .setColor(0x0099ff)
-        .setTitle('Dostupné Příkazy')
-        .setDescription('Tady je seznam všech dostupných příkazů:')
+        .setTitle('**Available Commands**')
+        .setDescription('Here is a list of all available commands:')
         .addFields(
-            { name: '/game', value: 'Hra: Kámen, nůžky, papír! ✊', inline: true },
-            { name: '/userinfo', value: 'Zobrazí informace o uživatelském účtu. 👤', inline: true },
-            { name: '/help', value: 'Zobrazí tento seznam příkazů. ℹ️', inline: true }
+            { name: '**🤑 /crypto**', value: 'Cryptocurrency information! 💰', inline: true },
+            { name: '**🗽 /userinfo**', value: 'User account information. 👤', inline: true },
+            { name: '**🌱 /help**', value: 'Shows this list of commands. ℹ️', inline: true },
+
+            // Empty field for separation
+            { name: '\u200B', value: '\u200B' },
+
+            { name: '**🛡️ Administrator Commands**', value: ' ' },
+            { name: '**🔨 /ban**', value: 'Bans the selected user.', inline: true },
+            { name: '**👢 /kick**', value: 'Kicks the selected user from the server.', inline: true }
         )
         .setFooter({ text: 'Sirbo' })
         .setTimestamp();
