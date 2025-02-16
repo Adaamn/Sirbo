@@ -1,6 +1,6 @@
 require('dotenv').config();
 const { Client, GatewayIntentBits, ActivityType } = require('discord.js');
-const { DISCORD_TOKEN, CLIENT_ID, GUILD_ID } = process.env;
+const { DISCORD_TOKEN, CLIENT_ID } = process.env;  // Removed GUILD_ID as it's no longer needed for global commands
 
 // Client setup with required intents
 const client = new Client({
@@ -77,11 +77,11 @@ async function registerCommands() {
         console.log('Starting command registration.');
 
         await rest.put(
-            Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID),
+            Routes.applicationCommands(CLIENT_ID),  // Changed to global commands
             { body: commands }
         );
 
-        console.log('Commands were successfully registered!');
+        console.log('Commands were successfully registered globally!');
     } catch (error) {
         console.error('Error registering commands:', error);
     }
